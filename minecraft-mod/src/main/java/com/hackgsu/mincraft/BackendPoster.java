@@ -22,13 +22,14 @@ public class BackendPoster
 
     private final ExecutorService executorService;
     private final Gson gson;
-    private final URL postEndpoint;
+    private final URL postEndpoint, textEndpoint;
 
     public BackendPoster() throws MalformedURLException
     {
         executorService = Executors.newFixedThreadPool(5);
         gson = new Gson();
         postEndpoint = new URL("https://us-central1-hackgsu2020.cloudfunctions.net/test1");
+        textEndpoint = new URL("https://us-central1-hackgsu2020.cloudfunctions.net/mincraft-sms");
     }
 
     public void postAdvancement(Advancement adv, String username)
@@ -38,7 +39,7 @@ public class BackendPoster
         payload.setData(adv.getId().toString());
         payload.setUsername(username);
 
-        createAndPostTo(postEndpoint, gson.toJson(payload));
+        //createAndPostTo(postEndpoint, gson.toJson(payload));
     }
 
     public void postBlockBreak(String blockName, String username)
@@ -48,7 +49,7 @@ public class BackendPoster
         payload.setData(blockName);
         payload.setUsername(username);
 
-        createAndPostTo(postEndpoint, gson.toJson(payload));
+        //createAndPostTo(postEndpoint, gson.toJson(payload));
     }
 
     public void postClickSign(String number, String message)
@@ -59,7 +60,7 @@ public class BackendPoster
 
         LOGGER.info("Texting \"" + message + "\' to " + number);
 
-        createAndPostTo(postEndpoint, gson.toJson(payload));
+        createAndPostTo(textEndpoint, gson.toJson(payload));
     }
 
     private void createAndPostTo(URL url, String payload)
