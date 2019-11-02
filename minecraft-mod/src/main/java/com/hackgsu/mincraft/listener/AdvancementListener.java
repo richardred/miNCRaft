@@ -1,5 +1,6 @@
-package com.hackgsu.mincraft;
+package com.hackgsu.mincraft.listener;
 
+import com.hackgsu.mincraft.Mincraft;
 import net.minecraft.advancements.Advancement;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -15,8 +16,6 @@ public class AdvancementListener
     @SubscribeEvent
     public static void onAdvancement(final AdvancementEvent event)
     {
-        LOGGER.info("Triggered an advancement event.");
-
         Advancement adv = event.getAdvancement();
 
         Mincraft.getInstance().getBackendPoster().postAdvancement(

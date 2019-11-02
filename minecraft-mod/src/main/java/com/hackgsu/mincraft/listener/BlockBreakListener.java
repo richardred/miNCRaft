@@ -1,5 +1,6 @@
-package com.hackgsu.mincraft;
+package com.hackgsu.mincraft.listener;
 
+import com.hackgsu.mincraft.Mincraft;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -14,8 +15,6 @@ public class BlockBreakListener
     @SubscribeEvent
     public static void onBlockBreak(final BlockEvent.BreakEvent event)
     {
-        LOGGER.info("Triggered a block break event.");
-
         Mincraft.getInstance().getBackendPoster().postBlockBreak(
                 event.getState().getBlock().getRegistryName().toString(),
                 event.getPlayer().getScoreboardName()
