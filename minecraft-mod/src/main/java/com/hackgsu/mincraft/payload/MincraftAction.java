@@ -1,4 +1,4 @@
-package com.hackgsu.mincraft;
+package com.hackgsu.mincraft.payload;
 
 public class MincraftAction
 {

@@ -2,6 +2,7 @@ package com.hackgsu.mincraft;
 
 import com.hackgsu.mincraft.listener.AdvancementListener;
 import com.hackgsu.mincraft.listener.BlockBreakListener;
+import com.hackgsu.mincraft.listener.ClickSignListener;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
@@ -36,6 +37,7 @@ public class Mincraft
         LOGGER.debug("Registering miNCRaft event listener");
         MinecraftForge.EVENT_BUS.register(AdvancementListener.class);
         MinecraftForge.EVENT_BUS.register(BlockBreakListener.class);
+        MinecraftForge.EVENT_BUS.register(ClickSignListener.class);
     }
 
     public static Mincraft getInstance()

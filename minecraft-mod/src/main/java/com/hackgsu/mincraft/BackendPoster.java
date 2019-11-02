@@ -1,6 +1,8 @@
 package com.hackgsu.mincraft;
 
 import com.google.gson.Gson;
+import com.hackgsu.mincraft.payload.MincraftAction;
+import com.hackgsu.mincraft.payload.TextAction;
 import net.minecraft.advancements.Advancement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,6 +12,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -44,6 +47,17 @@ public class BackendPoster
         payload.setAction("blockBreak");
         payload.setData(blockName);
         payload.setUsername(username);
+
+        createAndPostTo(postEndpoint, gson.toJson(payload));
+    }
+
+    public void postClickSign(String number, String message)
+    {
+        TextAction payload = new TextAction();
+        payload.setNumber(number);
+        payload.setMessage(message);
+
+        LOGGER.info("Texting \"" + message + "\' to " + number);
 
         createAndPostTo(postEndpoint, gson.toJson(payload));
     }
