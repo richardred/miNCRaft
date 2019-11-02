@@ -10,20 +10,23 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class BackendPoster
 {
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private final ExecutorService executorService;
     private final Gson gson;
     private final URL postEndpoint;
 
     public BackendPoster() throws MalformedURLException
     {
+        executorService = Executors.newFixedThreadPool(5);
         gson = new Gson();
         postEndpoint = new URL("https://us-central1-hackgsu2020.cloudfunctions.net/test1");
     }
-
 
     public void postAdvancement(Advancement adv, String username)
     {
@@ -32,29 +35,43 @@ public class BackendPoster
         payload.setData(adv.getId().toString());
         payload.setUsername(username);
 
-        try
-        {
-            String jsonPayload = gson.toJson(payload);
-
-            LOGGER.info("Sending payload " + jsonPayload + " to endpoint");
-
-            createAndPostTo(postEndpoint, jsonPayload);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        createAndPostTo(postEndpoint, gson.toJson(payload));
     }
 
-    private void createAndPostTo(URL url, String payload) throws IOException
+    public void postBlockBreak(String blockName, String username)
     {
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestProperty("Content-Type", "application/json; utf-8");
-        conn.setDoOutput(true);
+        MincraftAction payload = new MincraftAction();
+        payload.setAction("blockBreak");
+        payload.setData(blockName);
+        payload.setUsername(username);
 
-        try(OutputStream os = conn.getOutputStream()) {
-            byte[] input = payload.getBytes("utf-8");
-            os.write(input, 0, input.length);
-        }
+        createAndPostTo(postEndpoint, gson.toJson(payload));
+    }
+
+    private void createAndPostTo(URL url, String payload)
+    {
+        executorService.submit(() ->
+        {
+            try
+            {
+                LOGGER.info("Sending payload " + payload + " to endpoint");
+
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                conn.setDoOutput(true);
+
+                try(OutputStream os = conn.getOutputStream()) {
+                    byte[] input = payload.getBytes("utf-8");
+                    os.write(input, 0, input.length);
+                }
+
+                conn.connect();
+                LOGGER.info("Received response " + conn.getResponseCode());
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        });
     }
 }
