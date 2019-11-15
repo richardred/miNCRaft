@@ -42,9 +42,18 @@ public class ClickSignListener
                         .collect(Collectors.toList());
 
                 String number = text.get(0);
-                String message = text.get(1) + text.get(2) + text.get(3);
+                number = number.replace("-", "");
 
-                Mincraft.getInstance().getBackendPoster().postClickSign(number, message);
+                if (number.length() == 10)
+                {
+                    String message = text.get(1) + text.get(2) + text.get(3);
+
+                    Mincraft.getInstance().getBackendPoster().postClickSign(number, message);
+                }
+                else
+                {
+                    return;
+                }
             }
         }
     }
